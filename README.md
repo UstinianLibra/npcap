@@ -36,10 +36,23 @@
 │   └── ethernet.h/.cpp     # Ethernet II 帧解析、MAC/类型格式化
 ├── tests/
 │   └── ethernet_tests.cpp  # 不依赖网卡的帧解析单元测试
+├── bin/                    # 预编译的 Windows 11 ARM64 产物（见 bin/README.md）
 └── docs/
     ├── report.md           # 实验报告
     └── live-capture.txt    # Windows 11 + NPcap 1.90 实机输出
 ```
+
+## 预编译产物
+
+[`bin/`](bin/) 中提供了在 **ARM64 Windows 11 + Npcap 1.90** 上编译并实机验证过的：
+
+```text
+bin/npcap_sniffer_arm64.exe   # 主程序（ARM64）
+bin/wpcap.dll                 # Npcap libpcap 兼容 DLL
+bin/Packet.dll                # Npcap 驱动访问 DLL
+```
+
+文件大小、用法和 SHA-256 校验和见 [`bin/README.md`](bin/README.md)。
 
 ## Windows 构建（目标平台）
 
