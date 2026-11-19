@@ -1,0 +1,17 @@
+# Build outputs
+build/
+build-*/
+cmake-build-*/
+*.exe
+*.dll
+*.o
+*.obj
+*.pdb
+
+# 预编译的 Windows (ARM64) 产物需要入库
+!bin/*.exe
+!bin/*.dll
+
+# Editor / OS
+.DS_Store
+.vscode/

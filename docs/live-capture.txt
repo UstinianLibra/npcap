@@ -1,0 +1,81 @@
+NPcap 实机验证记录
+==================
+环境：Windows 11 ARM64（Parallels 虚拟机），Npcap 1.90，ARM64 构建
+日期：2026-11-15
+程序：C:\Users\Public\npcap_test\npcap_sniffer_arm64.exe
+
+1. 设备列表
+------------
+> npcap_sniffer_arm64.exe --list
+
+Capture devices (5):
+[ 1] \Device\NPF_{50773F6A-308F-4492-B071-EF5936F0AE6D}
+     WAN Miniport (Network Monitor)  [up, running]
+[ 2] \Device\NPF_{D0FDD305-4CE6-4B3A-971B-826181341819}
+     WAN Miniport (IPv6)  [up, running]
+[ 3] \Device\NPF_{B88832A8-D800-4DDF-94D1-BD9B1E60EBAA}
+     WAN Miniport (IP)  [up, running]
+[ 4] \Device\NPF_{7C348835-3C2D-4EEB-BC00-2D657AD089D3}
+     Parallels VirtIO Ethernet Adapter  [up, running]
+[ 5] \Device\NPF_Loopback
+     Adapter for loopback traffic capture  [loopback, up, running]
+
+2. 实时抓取 ICMP（8 次 ping，共 16 个 IP 帧，程序取前 10 帧）
+---------------------------------------------------------------
+> npcap_sniffer_arm64.exe -i 4 -c 10 -f icmp
+
+Device         : \Device\NPF_{7C348835-3C2D-4EEB-BC00-2D657AD089D3}
+Description    : Parallels VirtIO Ethernet Adapter
+Data link type : EN10MB (Ethernet)
+Promiscuous    : yes
+BPF filter     : icmp
+Frame limit    : 10
+
+Capturing...
+
+ No.  Time          Source MAC         Destination MAC    EtherType  Protocol            First byte
+----  ------------  -----------------  -----------------  ---------  ------------------  ----------
+   1  22:14:31.707  00:1c:42:53:17:d5  00:1c:42:00:00:18  0x0800     IPv4                0x45 ( 69)
+   2  22:14:31.708  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0800     IPv4                0x45 ( 69)
+   3  22:14:32.710  00:1c:42:53:17:d5  00:1c:42:00:00:18  0x0800     IPv4                0x45 ( 69)
+   4  22:14:32.712  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0800     IPv4                0x45 ( 69)
+   5  22:14:33.732  00:1c:42:53:17:d5  00:1c:42:00:00:18  0x0800     IPv4                0x45 ( 69)
+   6  22:14:33.733  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0800     IPv4                0x45 ( 69)
+   7  22:14:34.722  00:1c:42:53:17:d5  00:1c:42:00:00:18  0x0800     IPv4                0x45 ( 69)
+   8  22:14:34.723  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0800     IPv4                0x45 ( 69)
+   9  22:14:35.738  00:1c:42:53:17:d5  00:1c:42:00:00:18  0x0800     IPv4                0x45 ( 69)
+  10  22:14:35.739  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0800     IPv4                0x45 ( 69)
+
+--- Capture summary ---
+Frames read       : 10
+Frames displayed  : 10
+Malformed frames  : 0
+Packets received  : 10
+Packets dropped   : 0
+Interface dropped : 0
+
+3. 实时抓取 ARP（清空 ARP 缓存后 ping 网关）
+---------------------------------------------
+> npcap_sniffer_arm64.exe -i 4 -c 2 -f arp
+
+Device         : \Device\NPF_{7C348835-3C2D-4EEB-BC00-2D657AD089D3}
+Description    : Parallels VirtIO Ethernet Adapter
+Data link type : EN10MB (Ethernet)
+Promiscuous    : yes
+BPF filter     : arp
+Frame limit    : 2
+
+Capturing...
+
+ No.  Time          Source MAC         Destination MAC    EtherType  Protocol            First byte
+----  ------------  -----------------  -----------------  ---------  ------------------  ----------
+   1  22:14:53.162  00:1c:42:53:17:d5  ff:ff:ff:ff:ff:ff  0x0806     ARP                 0x00 (  0)
+   2  22:14:53.163  00:1c:42:00:00:18  00:1c:42:53:17:d5  0x0806     ARP                 0x00 (  0)
+
+--- Capture summary ---
+Frames read       : 2
+Frames displayed  : 2
+Malformed frames  : 0
+Packets received  : 2
+Packets dropped   : 0
+Interface dropped : 0
